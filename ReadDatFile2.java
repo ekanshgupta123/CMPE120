@@ -46,6 +46,7 @@ public class ReadDatFile2 {
             String line;
             int lineCount = 0;
             int skipLine = 0;
+            System.out.println("Register[5]: " + registers[5]);
 
             while (skipLine < this.programCounter) {
                 line = br.readLine();
@@ -64,7 +65,7 @@ public class ReadDatFile2 {
                 // Process the concatenated lines
                 System.out.println(concatenatedLines.toString());
                 String imm = "";
-                String rs1 = concatenatedLines.charAt(18) + "";
+                String rs1 = "";
                 String rd = "";
                 String func = "";
                 String opcode = "";
@@ -99,9 +100,14 @@ public class ReadDatFile2 {
                 System.out.print("rd: " + rd);
                 System.out.println(" Register: " + intToRegister.get(binaryStringToInt(rd)));
                 System.out.println("opcode: " + opcode.replaceAll("\\s", ""));
-                System.out.println("-------------------------------------");  // Separator
                 programCounter+=4;
-                System.out.println(programCounter);
+                System.out.println("Program Counter: " + programCounter);
+                System.out.println("Register rd: " + binaryStringToInt(rd) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rd))]);
+                System.out.println("Register rs1: " + binaryStringToInt(rs1) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rs1))]);
+                System.out.println(intToRegister.get(binaryStringToInt(rd)) + " = " + intToRegister.get(binaryStringToInt(rs1)) + " + " + imm);
+                registers[binaryStringToInt(rd)] = registers[Integer.valueOf(binaryStringToInt(rs1))] + convertToDecimal(imm);
+                System.out.println("New value in register " + intToRegister.get(binaryStringToInt(rd))+ ": " + registers[binaryStringToInt(rd)]);
+                System.out.println("-------------------------------------");  // Separator
             }       
         }
         catch (IOException e) {
@@ -109,11 +115,20 @@ public class ReadDatFile2 {
         }
     }
 
-    public void printRegisters() {
-        System.out.println("Register Contents:");
-        for (int i = 0; i < NUM_REGISTERS; i++) {
-            System.out.println("x" + i + ": " + registers[i]);
+    public static String decimalToBinary32(int decimalValue) {
+        // Using Integer.toBinaryString to convert decimal to binary
+        String binaryString = Integer.toBinaryString(decimalValue);
+
+        // Ensure the binary string is 32 bits long
+        while (binaryString.length() < 32) {
+            binaryString = "0" + binaryString;
         }
+
+        return binaryString;
+    }
+
+    public String printRegisters(int value) {
+        return "x" + value + ": " + (registers[value]);
     }
 
     private static int convertToDecimal(String binaryString) {
@@ -140,7 +155,7 @@ public class ReadDatFile2 {
         return Integer.parseInt(binaryString, 2);
     }
 
-    public void readDat() {
+    public void runAllInstructions() {
         try (BufferedReader br = new BufferedReader(new FileReader(this.filePath))) {
             StringBuilder concatenatedLines = new StringBuilder();
             String line;
@@ -149,6 +164,7 @@ public class ReadDatFile2 {
 
             while (skipLine < programCounter) {
                 line = br.readLine();
+                skipLine++;
             }
 
             while ((line = br.readLine()) != null) {
@@ -162,7 +178,7 @@ public class ReadDatFile2 {
                 if (lineCount == 4) {
                     System.out.println(concatenatedLines.toString());
                     String imm = "";
-                    String rs1 = concatenatedLines.charAt(18) + "";
+                    String rs1 = "";
                     String rd = "";
                     String func = "";
                     String opcode = "";
@@ -186,17 +202,24 @@ public class ReadDatFile2 {
                     for (int i = 1; i <= 7; i++) {
                         opcode+=concatenatedLines.charAt(i);
                     }
-                    imm.replaceAll("\\s", "");
+                    imm = imm.replaceAll("\\s", "");
                     System.out.print("IMM: " + imm);
                     System.out.println(" Decimal: " + convertToDecimal(imm));
-                    rs1.replaceAll("\\s", "");
+                    rs1 = rs1.replaceAll("\\s", "");
                     System.out.print("RS1: " + rs1);
                     System.out.println(" " + intToRegister.get(binaryStringToInt(rs1)));
                     System.out.println("Func3: " + func.replaceAll("\\s", ""));
-                    rd.replaceAll("\\s", "");
+                    rd = rd.replaceAll("\\s", "");
                     System.out.print("rd: " + rd);
                     System.out.println(" Register: " + intToRegister.get(binaryStringToInt(rd)));
                     System.out.println("opcode: " + opcode.replaceAll("\\s", ""));
+                    programCounter+=4;
+                    System.out.println("Program Counter: " + programCounter);
+                    System.out.println("Register rd: " + binaryStringToInt(rd) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rd))]);
+                    System.out.println("Register rs1: " + binaryStringToInt(rs1) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rs1))]);
+                    System.out.println(intToRegister.get(binaryStringToInt(rd)) + " = " + intToRegister.get(binaryStringToInt(rs1)) + " + " + imm);
+                    registers[binaryStringToInt(rd)] = registers[Integer.valueOf(binaryStringToInt(rs1))] + convertToDecimal(imm);
+                    System.out.println("New value in register " + intToRegister.get(binaryStringToInt(rd))+ ": " + registers[binaryStringToInt(rd)]);
                     System.out.println("-------------------------------------");  // Separator
 
                     // Reset the StringBuilder and line count for the next group
@@ -236,46 +259,136 @@ public class ReadDatFile2 {
         String filePath = "/Users/ekanshgupta/CMPE 120/SimulatorTests/addi_hazards.dat";
         ReadDatFile2 r1 = new ReadDatFile2(filePath);
 
-        // Replace 'your_data.dat' with the actual path to your .dat file
-        // r1.loadInstructionsFromFile(filePath);
-
         Scanner scanner = new Scanner(System.in);
 
-        while (r1.hasMoreInstructions()) {
+        while (true) {
             System.out.println("Menu:");
-            System.out.println("1) Print Registers");
-            System.out.println("2) Print Memory");
-            System.out.println("3) Run All Instructions");
-            System.out.println("4) Run Next Instruction");
-            System.out.println("5) Run Till Breakpoint");
-            System.out.println("6) Exit");
+            System.out.println("Return the contents in the registers (x0 to x31)");
+            System.out.println("p) Print Memory");
+            System.out.println("r) Run All Instructions");
+            System.out.println("s) Run Next Instruction");
+            System.out.println("b) Run Till Breakpoint");
+            System.out.println("exit) Exit");
 
             System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
+            String choice = scanner.nextLine();
 
             switch (choice) {
-                case 1:
-                    r1.printRegisters();
-                    break;
-                case 2:
+                case "p":
                     // r1.printMemory();
                     break;
-                case 3:
-                    // r1.runAllInstructions();
+                case "r":
+                    r1.runAllInstructions();
                     break;
-                case 4:
+                case "s":
                     r1.runNextInstruction();
                     break;
-                case 5:
+                case "b":
                     System.out.print("Enter Breakpoint: ");
                     int breakpoint = scanner.nextInt();
                     // r1.runTillBreakpoint(breakpoint);
                     break;
-                case 6:
+                case "exit":
                     System.out.println("Exiting program.");
                     scanner.close();
                     System.exit(0);
                     break;
+                    case "x0":
+                    System.out.println(r1.printRegisters(0));
+                    break;
+                case "x1":
+                    System.out.println(r1.printRegisters(1));
+                    break;
+                case "x2":
+                    System.out.println(r1.printRegisters(2));
+                    break;
+                case "x3":
+                    System.out.println(r1.printRegisters(3));
+                    break;
+                case "x4":
+                    System.out.println(r1.printRegisters(4));
+                    break;
+                case "x5":
+                    System.out.println(r1.printRegisters(5));
+                    break;
+                case "x6":
+                    System.out.println(r1.printRegisters(6));
+                    break;
+                case "x7":
+                    System.out.println(r1.printRegisters(7));
+                    break;
+                case "x8":
+                    System.out.println(r1.printRegisters(8));
+                    break;
+                case "x9":
+                    System.out.println(r1.printRegisters(9));
+                    break;
+                case "x10":
+                    System.out.println(r1.printRegisters(10));
+                    break;
+                case "x11":
+                    System.out.println(r1.printRegisters(11));
+                    break;
+                case "x12":
+                    System.out.println(r1.printRegisters(12));
+                    break;
+                case "x13":
+                    System.out.println(r1.printRegisters(13));
+                    break;
+                case "x14":
+                    System.out.println(r1.printRegisters(14));
+                    break;
+                case "x15":
+                    System.out.println(r1.printRegisters(15));
+                    break;
+                case "x16":
+                    System.out.println(r1.printRegisters(16));
+                    break;
+                case "x17":
+                    System.out.println(r1.printRegisters(17));
+                    break;
+                case "x18":
+                    System.out.println(r1.printRegisters(18));
+                    break;
+                case "x19":
+                    System.out.println(r1.printRegisters(19));
+                    break;
+                case "x20":
+                    System.out.println(r1.printRegisters(20));
+                    break;
+                case "x21":
+                    System.out.println(r1.printRegisters(21));
+                    break;
+                case "x22":
+                    System.out.println(r1.printRegisters(22));
+                    break;
+                case "x23":
+                    System.out.println(r1.printRegisters(23));
+                    break;
+                case "x24":
+                    System.out.println(r1.printRegisters(24));
+                    break;
+                case "x25":
+                    System.out.println(r1.printRegisters(25));
+                    break;
+                case "x26":
+                    System.out.println(r1.printRegisters(26));
+                    break;
+                case "x27":
+                    System.out.println(r1.printRegisters(27));
+                    break;
+                case "x28":
+                    System.out.println(r1.printRegisters(28));
+                    break;
+                case "x29":
+                    System.out.println(r1.printRegisters(29));
+                    break;
+                case "x30":
+                    System.out.println(r1.printRegisters(30));
+                    break;
+                case "x31":
+                    System.out.println(r1.printRegisters(31));
+                    break;        
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
