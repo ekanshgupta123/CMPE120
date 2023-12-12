@@ -7,4 +7,3 @@ addi t4, x0, 5
 addi t5, x0, 11
 addi t6, t0, -11
 nop
-
