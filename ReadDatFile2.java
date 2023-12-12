@@ -1,6 +1,9 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.*;
@@ -15,6 +18,7 @@ public class ReadDatFile2 {
     private int[] memory;
     private int programCounter;
     private String filePath;
+    private ArrayList<Integer> breakpoint;
 
     private static final int TEXT_SEGMENT_START_ADDRESS = 0x00000000;
     private static final int DATA_SEGMENT_START_ADDRESS = 0x80000000;
@@ -38,6 +42,7 @@ public class ReadDatFile2 {
         programCounter = 0;
         registers[0] = 0;
         this.filePath = filePath;
+        breakpoint = new ArrayList<>(5);
     }
 
     public void runNextInstruction() {
@@ -46,7 +51,7 @@ public class ReadDatFile2 {
             String line;
             int lineCount = 0;
             int skipLine = 0;
-            System.out.println("Register[5]: " + registers[5]);
+            // System.out.println("Register[5]: " + registers[5]);
 
             while (skipLine < this.programCounter) {
                 line = br.readLine();
@@ -90,24 +95,156 @@ public class ReadDatFile2 {
                     opcode += concatenatedLines.charAt(i);
                 }
                 imm = imm.replaceAll("\\s", "");
-                System.out.print("IMM: " + imm);
-                System.out.println(" Decimal: " + convertToDecimal(imm));
+                // System.out.print("IMM: " + imm);
+                // System.out.println(" Decimal: " + convertToDecimal(imm));
                 rs1 = rs1.replaceAll("\\s", "");
-                System.out.print("RS1: " + rs1);
-                System.out.println(" " + intToRegister.get(binaryStringToInt(rs1)));
-                System.out.println("Func3: " + func.replaceAll("\\s", ""));
+                // System.out.print("RS1: " + rs1);
+                // System.out.println(" " + intToRegister.get(binaryStringToInt(rs1)));
+                // System.out.println("Func3: " + func.replaceAll("\\s", ""));
                 rd = rd.replaceAll("\\s", "");
-                System.out.print("rd: " + rd);
-                System.out.println(" Register: " + intToRegister.get(binaryStringToInt(rd)));
-                System.out.println("opcode: " + opcode.replaceAll("\\s", ""));
+                // System.out.print("rd: " + rd);
+                // System.out.println(" Register: " + intToRegister.get(binaryStringToInt(rd)));
+                // System.out.println("opcode: " + opcode.replaceAll("\\s", ""));
+                opcode = opcode.replaceAll("\\s", "");
+
                 programCounter+=4;
-                System.out.println("Program Counter: " + programCounter);
-                System.out.println("Register rd: " + binaryStringToInt(rd) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rd))]);
-                System.out.println("Register rs1: " + binaryStringToInt(rs1) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rs1))]);
-                System.out.println(intToRegister.get(binaryStringToInt(rd)) + " = " + intToRegister.get(binaryStringToInt(rs1)) + " + " + imm);
+                // System.out.println("Program Counter: " + programCounter);
+                // System.out.println("Register rd: " + binaryStringToInt(rd) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rd))]);
+                // System.out.println("Register rs1: " + binaryStringToInt(rs1) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rs1))]);
+                // System.out.println(intToRegister.get(binaryStringToInt(rd)) + " = " + intToRegister.get(binaryStringToInt(rs1)) + " + " + imm);
                 registers[binaryStringToInt(rd)] = registers[Integer.valueOf(binaryStringToInt(rs1))] + convertToDecimal(imm);
-                System.out.println("New value in register " + intToRegister.get(binaryStringToInt(rd))+ ": " + registers[binaryStringToInt(rd)]);
-                System.out.println("-------------------------------------");  // Separator
+                instruction(intToRegister.get(binaryStringToInt(rd)), intToRegister.get(binaryStringToInt(rs1)), convertToDecimal(imm));
+                // System.out.println("New value in register " + intToRegister.get(binaryStringToInt(rd))+ ": " + registers[binaryStringToInt(rd)]);
+                // System.out.println("-------------------------------------");  // Separator
+            }       
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void operation(String opcode, String rd, String rs1, String func, String imm) {
+        if (opcode == "0010011") {
+            if (func == "000") {
+                // addi 
+            }
+            else if (func == "010") {
+                // slti
+            }
+            else if (func == "100") {
+                // xori
+            }
+            else if (func == "110") {
+                // ori
+            }
+            else if (func == "111") {
+                // andi
+            }
+            else if (func == "101") {
+                if (imm.substring(0, 2) == "01") {
+                    // srai
+                }
+                else {
+                    //srli
+                }
+            }
+            else if (func == "001") {
+                // slli
+            }
+        }
+    }
+
+    public int getProgramCounter() {
+        return programCounter;
+    }
+
+    public void instruction (String reg1, String reg2, int imm) {
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            // need to get rid of "addi" make it dy
+            String newLine = "addi " + reg1 + ", " + reg2 + ", " + imm;
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void insn() {
+        int tempPC = getProgramCounter();
+        try (BufferedReader br = new BufferedReader(new FileReader(this.filePath))) {
+            StringBuilder concatenatedLines = new StringBuilder();
+            String line;
+            int lineCount = 0;
+            int skipLine = 0;
+
+            while (skipLine < tempPC) {
+                line = br.readLine();
+                skipLine++;
+            }
+
+            while ((line = br.readLine()) != null && lineCount < 4) {
+                // Concatenate the line to the StringBuilder
+                concatenatedLines.append(line).append(" ");
+    
+                // Increment the line count
+                lineCount++;
+            }
+
+            if (lineCount == 4) {
+                // Process the concatenated lines
+                // System.out.println(concatenatedLines.toString());
+                String imm = "";
+                String rs1 = "";
+                String rd = "";
+                String func = "";
+                String opcode = "";
+                for (int i = 27; i <= 34; i++) {
+                    imm += concatenatedLines.charAt(i);
+                }
+                for (int i = 18; i <= 21; i++) {
+                    imm += concatenatedLines.charAt(i);
+                }
+                for (int i = 22; i <= 25; i++) {
+                    rs1 += concatenatedLines.charAt(i);
+                }
+                rs1 += concatenatedLines.charAt(9);
+                for (int i = 10; i <= 12; i++) {
+                    func += concatenatedLines.charAt(i);
+                }
+                for (int i = 13; i <= 16; i++) {
+                    rd += concatenatedLines.charAt(i);
+                }
+                rd += concatenatedLines.charAt(0);
+                for (int i = 1; i <= 7; i++) {
+                    opcode += concatenatedLines.charAt(i);
+                }
+                imm = imm.replaceAll("\\s", "");
+                // System.out.print("IMM: " + imm);
+                // System.out.println(" Decimal: " + convertToDecimal(imm));
+                rs1 = rs1.replaceAll("\\s", "");
+                // System.out.print("RS1: " + rs1);
+                // System.out.println(" " + intToRegister.get(binaryStringToInt(rs1)));
+                // System.out.println("Func3: " + func.replaceAll("\\s", ""));
+                rd = rd.replaceAll("\\s", "");
+                // System.out.print("rd: " + rd);
+                // System.out.println(" Register: " + intToRegister.get(binaryStringToInt(rd)));
+                // System.out.println("opcode: " + opcode.replaceAll("\\s", ""));
+                // programCounter+=4;
+                // System.out.println("Program Counter: " + programCounter);
+                // System.out.println("Register rd: " + binaryStringToInt(rd) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rd))]);
+                // System.out.println("Register rs1: " + binaryStringToInt(rs1) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rs1))]);
+                System.out.println("addi " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToDecimal(imm));
+                // instruction(intToRegister.get(binaryStringToInt(rd)), intToRegister.get(binaryStringToInt(rs1)), imm);
+                // registers[binaryStringToInt(rd)] = registers[Integer.valueOf(binaryStringToInt(rs1))] + convertToDecimal(imm);
+                // System.out.println("New value in register " + intToRegister.get(binaryStringToInt(rd))+ ": " + registers[binaryStringToInt(rd)]);
+                // System.out.println("-------------------------------------");  // Separator
             }       
         }
         catch (IOException e) {
@@ -128,7 +265,7 @@ public class ReadDatFile2 {
     }
 
     public String printRegisters(int value) {
-        return "x" + value + ": " + (registers[value]);
+        return "x" + value + ": " + (decimalToBinary32(registers[value])) + " (" + registers[value] + ")";
     }
 
     private static int convertToDecimal(String binaryString) {
@@ -167,7 +304,7 @@ public class ReadDatFile2 {
                 skipLine++;
             }
 
-            while ((line = br.readLine()) != null) {
+            while ((line = br.readLine()) != null ) {
                 // Concatenate the line to the StringBuilder
                 concatenatedLines.append(line).append(" ");
 
@@ -176,6 +313,11 @@ public class ReadDatFile2 {
 
                 // Check if four lines have been read
                 if (lineCount == 4) {
+                    if (breakpoint.contains(programCounter)) {
+                        System.out.println("Breakpoint hit at line: " + programCounter);
+                        breakpoint.remove(0);
+                        return;
+                    }
                     System.out.println(concatenatedLines.toString());
                     String imm = "";
                     String rs1 = "";
@@ -203,23 +345,24 @@ public class ReadDatFile2 {
                         opcode+=concatenatedLines.charAt(i);
                     }
                     imm = imm.replaceAll("\\s", "");
-                    System.out.print("IMM: " + imm);
-                    System.out.println(" Decimal: " + convertToDecimal(imm));
+                    // System.out.print("IMM: " + imm);
+                    // System.out.println(" Decimal: " + convertToDecimal(imm));
                     rs1 = rs1.replaceAll("\\s", "");
-                    System.out.print("RS1: " + rs1);
-                    System.out.println(" " + intToRegister.get(binaryStringToInt(rs1)));
-                    System.out.println("Func3: " + func.replaceAll("\\s", ""));
+                    // System.out.print("RS1: " + rs1);
+                    // System.out.println(" " + intToRegister.get(binaryStringToInt(rs1)));
+                    // System.out.println("Func3: " + func.replaceAll("\\s", ""));
                     rd = rd.replaceAll("\\s", "");
-                    System.out.print("rd: " + rd);
-                    System.out.println(" Register: " + intToRegister.get(binaryStringToInt(rd)));
-                    System.out.println("opcode: " + opcode.replaceAll("\\s", ""));
+                    // System.out.print("rd: " + rd);
+                    // System.out.println(" Register: " + intToRegister.get(binaryStringToInt(rd)));
+                    // System.out.println("opcode: " + opcode.replaceAll("\\s", ""));
                     programCounter+=4;
-                    System.out.println("Program Counter: " + programCounter);
-                    System.out.println("Register rd: " + binaryStringToInt(rd) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rd))]);
-                    System.out.println("Register rs1: " + binaryStringToInt(rs1) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rs1))]);
-                    System.out.println(intToRegister.get(binaryStringToInt(rd)) + " = " + intToRegister.get(binaryStringToInt(rs1)) + " + " + imm);
+                    // System.out.println("Program Counter: " + programCounter);
+                    // System.out.println("Register rd: " + binaryStringToInt(rd) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rd))]);
+                    // System.out.println("Register rs1: " + binaryStringToInt(rs1) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rs1))]);
+                    // System.out.println(intToRegister.get(binaryStringToInt(rd)) + " = " + intToRegister.get(binaryStringToInt(rs1)) + " + " + imm);
                     registers[binaryStringToInt(rd)] = registers[Integer.valueOf(binaryStringToInt(rs1))] + convertToDecimal(imm);
-                    System.out.println("New value in register " + intToRegister.get(binaryStringToInt(rd))+ ": " + registers[binaryStringToInt(rd)]);
+                    instruction(intToRegister.get(binaryStringToInt(rd)), intToRegister.get(binaryStringToInt(rs1)), convertToDecimal(imm));
+                    // System.out.println("New value in register " + intToRegister.get(binaryStringToInt(rd))+ ": " + registers[binaryStringToInt(rd)]);
                     System.out.println("-------------------------------------");  // Separator
 
                     // Reset the StringBuilder and line count for the next group
@@ -256,7 +399,9 @@ public class ReadDatFile2 {
     }
 
     public static void main(String[] args) {
-        String filePath = "/Users/ekanshgupta/CMPE 120/SimulatorTests/addi_hazards.dat";
+        // Change path with your own file
+        // String filePath = "/Users/ekanshgupta/CMPE 120/SimulatorTests/addi_hazards.dat";
+        String filePath = "/Users/ekanshgupta/CMPE 120/SimulatorTests/addi_nohazard.dat";
         ReadDatFile2 r1 = new ReadDatFile2(filePath);
 
         Scanner scanner = new Scanner(System.in);
@@ -267,7 +412,8 @@ public class ReadDatFile2 {
             System.out.println("p) Print Memory");
             System.out.println("r) Run All Instructions");
             System.out.println("s) Run Next Instruction");
-            System.out.println("b) Run Till Breakpoint");
+            System.out.println("b) Enter a breakpoint");
+            System.out.println("insn) Prints the “assembly of the instruction” that will be executed next");
             System.out.println("exit) Exit");
 
             System.out.print("Enter your choice: ");
@@ -286,16 +432,22 @@ public class ReadDatFile2 {
                 case "b":
                     System.out.print("Enter Breakpoint: ");
                     int breakpoint = scanner.nextInt();
-                    // r1.runTillBreakpoint(breakpoint);
+                    scanner.nextLine();
+                    r1.breakpoint.add(breakpoint);
+                    break;
+                case "insn":
+                    r1.insn();
                     break;
                 case "exit":
                     System.out.println("Exiting program.");
                     scanner.close();
                     System.exit(0);
                     break;
-                    case "x0":
+                case "x0":
                     System.out.println(r1.printRegisters(0));
                     break;
+                case "pc":
+                    System.out.println(r1.getProgramCounter());
                 case "x1":
                     System.out.println(r1.printRegisters(1));
                     break;
