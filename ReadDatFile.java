@@ -238,10 +238,10 @@ public class ReadDatFile {
     public static void main(String[] args) {
         // Replace 'your_data.dat' with the actual path to your .dat file
         String filePath = "/Users/ekanshgupta/CMPE 120/SimulatorTests/addi_hazards.dat";
-        String binary = "10010011 01011110 00011110 01000000";
+        String binary = "10010011 00000010 01010000 00000000";
         String binary2 = "10010011 11011110 00011110 00000000";
         printMachine(binary);
-        printMachine(binary2);
+        // printMachine(binary2);
         // readDat(filePath);
     }
 }

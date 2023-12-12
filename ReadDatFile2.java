@@ -16,9 +16,9 @@ public class ReadDatFile2 {
 
     private int[] registers;
     private int[] memory;
-    private int programCounter;
+    private String programCounter;
     private String filePath;
-    private ArrayList<Integer> breakpoint;
+    private ArrayList<String> breakpoint;
 
     private static final int TEXT_SEGMENT_START_ADDRESS = 0x00000000;
     private static final int DATA_SEGMENT_START_ADDRESS = 0x80000000;
@@ -39,11 +39,18 @@ public class ReadDatFile2 {
     public ReadDatFile2(String filePath) {
         registers = new int[NUM_REGISTERS];
         memory = new int[MEMORY_SIZE];
-        programCounter = 0;
+        programCounter = "0x00000000";
         registers[0] = 0;
         this.filePath = filePath;
         breakpoint = new ArrayList<>(5);
     }
+
+    public int convertHexToDecimal(String hexString) {
+        hexString = hexString.substring(2);
+        int decimalValue = Integer.parseInt(hexString, 16);
+        return decimalValue;
+    }
+
 
     public void runNextInstruction() {
         try (BufferedReader br = new BufferedReader(new FileReader(this.filePath))) {
@@ -53,7 +60,7 @@ public class ReadDatFile2 {
             int skipLine = 0;
             // System.out.println("Register[5]: " + registers[5]);
 
-            while (skipLine < this.programCounter) {
+            while (skipLine < convertHexToDecimal(this.programCounter)) {
                 line = br.readLine();
                 skipLine++;
             }
@@ -106,8 +113,9 @@ public class ReadDatFile2 {
                 // System.out.println(" Register: " + intToRegister.get(binaryStringToInt(rd)));
                 // System.out.println("opcode: " + opcode.replaceAll("\\s", ""));
                 opcode = opcode.replaceAll("\\s", "");
-
-                programCounter+=4;
+                programCounter = Integer.toHexString(convertHexToDecimal(this.programCounter) + 4);
+                programCounter = "0x"+programCounter;
+                // programCounter+=4;
                 // System.out.println("Program Counter: " + programCounter);
                 // System.out.println("Register rd: " + binaryStringToInt(rd) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rd))]);
                 // System.out.println("Register rs1: " + binaryStringToInt(rs1) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rs1))]);
@@ -137,6 +145,9 @@ public class ReadDatFile2 {
             else if (func == "110") {
                 // ori
             }
+            else if (func == "011") {
+                // slli
+            }
             else if (func == "111") {
                 // andi
             }
@@ -152,9 +163,73 @@ public class ReadDatFile2 {
                 // slli
             }
         }
+        else if (opcode == "0110011") {
+            if (func == "000") {
+                if (imm.substring(0, 2) == "00") {
+                    // add
+                }
+                else if (imm.substring(0, 2) == "01") {
+                    // sub
+                }
+            }
+            else if (func == "001") {
+                // sll
+            }
+            else if (func == "010") {
+                // slt
+            }
+            else if (func == "011") {
+                // sltu
+            }
+            else if (func == "100") {
+                // xor
+            }
+            else if (func == "101") {
+                if (imm.substring(0, 2) == "00") {
+                    // srl
+                }
+                else if (imm.substring(0, 2) == "01") {
+                    // sra
+                }
+            }
+            else if (func == "110") {
+                // or
+            }
+            else if (func == "111") {
+                // and
+            }
+        }
+        else if (opcode == "0000011") {
+            if (func == "000") {
+                // lb
+            }
+            else if (func == "001") {
+                // lh
+            }
+            else if (func == "010") {
+                // lw
+            }
+            else if (func == "100") {
+                // lbu
+            }
+            else if (func == "101") {
+                // lhu
+            }
+        }
+        else if (opcode == "0100011") {
+            if (func == "000") {
+                // sb
+            }
+            else if (func == "001") {
+                // sh
+            }
+            else if (func == "010") {
+                // sw
+            }
+        }
     }
 
-    public int getProgramCounter() {
+    public String getProgramCounter() {
         return programCounter;
     }
 
@@ -177,7 +252,7 @@ public class ReadDatFile2 {
     }
 
     public void insn() {
-        int tempPC = getProgramCounter();
+        int tempPC = convertHexToDecimal(this.programCounter);
         try (BufferedReader br = new BufferedReader(new FileReader(this.filePath))) {
             StringBuilder concatenatedLines = new StringBuilder();
             String line;
@@ -299,7 +374,7 @@ public class ReadDatFile2 {
             int lineCount = 0;
             int skipLine = 0;
 
-            while (skipLine < programCounter) {
+            while (skipLine < convertHexToDecimal(this.programCounter)) {
                 line = br.readLine();
                 skipLine++;
             }
@@ -313,8 +388,10 @@ public class ReadDatFile2 {
 
                 // Check if four lines have been read
                 if (lineCount == 4) {
-                    if (breakpoint.contains(programCounter)) {
-                        System.out.println("Breakpoint hit at line: " + programCounter);
+                    String bcpc = Integer.toHexString(convertHexToDecimal(this.programCounter) + 4);
+                    bcpc  = "0x"+bcpc;
+                    if (breakpoint.contains(bcpc)) {
+                        System.out.println("Breakpoint hit at line: " + bcpc);
                         breakpoint.remove(0);
                         return;
                     }
@@ -355,7 +432,10 @@ public class ReadDatFile2 {
                     // System.out.print("rd: " + rd);
                     // System.out.println(" Register: " + intToRegister.get(binaryStringToInt(rd)));
                     // System.out.println("opcode: " + opcode.replaceAll("\\s", ""));
-                    programCounter+=4;
+                    programCounter = Integer.toHexString(convertHexToDecimal(this.programCounter) + 4);
+                    programCounter = "0x"+programCounter;
+                    System.out.println(programCounter);
+                    // programCounter+=4;
                     // System.out.println("Program Counter: " + programCounter);
                     // System.out.println("Register rd: " + binaryStringToInt(rd) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rd))]);
                     // System.out.println("Register rs1: " + binaryStringToInt(rs1) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rs1))]);
@@ -391,12 +471,12 @@ public class ReadDatFile2 {
         }
         return lineCount;
     }
-    public boolean hasMoreInstructions() {
-        if (programCounter != countLines(filePath)) {
-            return true;
-        }
-        return false;
-    }
+    // public boolean hasMoreInstructions() {
+    //     if (programCounter != countLines(filePath)) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
     public static void main(String[] args) {
         // Change path with your own file
@@ -408,12 +488,13 @@ public class ReadDatFile2 {
 
         while (true) {
             System.out.println("Menu:");
-            System.out.println("Return the contents in the registers (x0 to x31)");
-            System.out.println("p) Print Memory");
             System.out.println("r) Run All Instructions");
             System.out.println("s) Run Next Instruction");
-            System.out.println("b) Enter a breakpoint");
+            System.out.println("Return the contents in the registers (x0 to x31)");
+            System.out.println("p) Print Memory");
+            System.out.println("pc) Returns value in PC");
             System.out.println("insn) Prints the “assembly of the instruction” that will be executed next");
+            System.out.println("b) Enter a breakpoint");
             System.out.println("exit) Exit");
 
             System.out.print("Enter your choice: ");
@@ -431,8 +512,8 @@ public class ReadDatFile2 {
                     break;
                 case "b":
                     System.out.print("Enter Breakpoint: ");
-                    int breakpoint = scanner.nextInt();
-                    scanner.nextLine();
+                    String breakpoint = scanner.nextLine();
+                    // scanner.nextLine();
                     r1.breakpoint.add(breakpoint);
                     break;
                 case "insn":
@@ -448,6 +529,7 @@ public class ReadDatFile2 {
                     break;
                 case "pc":
                     System.out.println(r1.getProgramCounter());
+                    break;
                 case "x1":
                     System.out.println(r1.printRegisters(1));
                     break;
