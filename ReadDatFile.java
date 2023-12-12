@@ -13,6 +13,7 @@ public class ReadDatFile {
     private int[] registers;
     private int[] memory;
     private int programCounter;
+    private int[] breakpoint;
 
     private static final int TEXT_SEGMENT_START_ADDRESS = 0x00000000;
     private static final int DATA_SEGMENT_START_ADDRESS = 0x80000000;
@@ -35,6 +36,7 @@ public class ReadDatFile {
         memory = new int[MEMORY_SIZE];
         programCounter = 0;
         registers[0] = 0;
+        breakpoint = new int[5];
     }
 
     public void executeInstruction(String filePath) {
@@ -148,7 +150,7 @@ public class ReadDatFile {
                 if (lineCount == 4) {
                     System.out.println(concatenatedLines.toString());
                     String imm = "";
-                    String rs1 = concatenatedLines.charAt(18) + "";
+                    String rs1 = "";
                     String rd = "";
                     String func = "";
                     String opcode = "";
@@ -199,9 +201,47 @@ public class ReadDatFile {
             e.printStackTrace();
         }
     }
+
+    public static void printMachine(String concatenatedLines) {
+        String imm = "";
+        String rs1 = "";
+        String rd = "";
+        String func = "";
+        String opcode = "";
+        for (int i = 27; i <= 34; i++) {
+            imm += concatenatedLines.charAt(i);
+        }
+        for (int i = 18; i <= 21; i++) {
+            imm += concatenatedLines.charAt(i);
+        }
+        for (int i = 22; i <= 25; i++) {
+            rs1 += concatenatedLines.charAt(i);
+        }
+        rs1 += concatenatedLines.charAt(9);
+        for (int i = 10; i <= 12; i++) {
+            func += concatenatedLines.charAt(i);
+        }
+        for (int i = 13; i <= 16; i++) {
+            rd += concatenatedLines.charAt(i);
+        }
+        rd += concatenatedLines.charAt(0);
+        for (int i = 1; i <= 7; i++) {
+            opcode += concatenatedLines.charAt(i);
+        }
+        System.out.println("Imm: " + imm);
+        System.out.println("rs1: " + rs1);
+        System.out.println("func: " + func);
+        System.out.println("rd: " + rd);
+        System.out.println("opcode: " + opcode);
+
+    }
     public static void main(String[] args) {
         // Replace 'your_data.dat' with the actual path to your .dat file
         String filePath = "/Users/ekanshgupta/CMPE 120/SimulatorTests/addi_hazards.dat";
-        readDat(filePath);
+        String binary = "10010011 01011110 00011110 01000000";
+        String binary2 = "10010011 11011110 00011110 00000000";
+        printMachine(binary);
+        printMachine(binary2);
+        // readDat(filePath);
     }
 }
