@@ -359,6 +359,236 @@ public class ReadDatFile2 {
         }
     }
 
+    public void add (String rd, String rs1, String rs2) {
+        registers[binaryStringToInt(rd)] = registers[Integer.valueOf(binaryStringToInt(rs1))] + registers[Integer.valueOf(binaryStringToInt(rs2))];
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = addPrint(rd, rs1, rs2);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String addPrint(String rd, String rs1, String rs2) {
+        String newLine = "add " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + intToRegister.get(binaryStringToInt(rs2));
+        return newLine;
+    }
+
+    public void sub (String rd, String rs1, String rs2) {
+        registers[binaryStringToInt(rd)] = registers[Integer.valueOf(binaryStringToInt(rs1))] - registers[Integer.valueOf(binaryStringToInt(rs2))];
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = subPrint(rd, rs1, rs2);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String subPrint(String rd, String rs1, String rs2) {
+        String newLine = "sub " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + intToRegister.get(binaryStringToInt(rs2));
+        return newLine;
+    }
+
+    public void sll (String rd, String rs1, String rs2) {
+        registers[binaryStringToInt(rd)] = registers[Integer.valueOf(binaryStringToInt(rs1))] << registers[Integer.valueOf(binaryStringToInt(rs2))];
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = sllPrint(rd, rs1, rs2);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String sllPrint(String rd, String rs1, String rs2) {
+        String newLine = "sll " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + intToRegister.get(binaryStringToInt(rs2));
+        return newLine;
+    }
+
+    public void slt (String rd, String rs1, String rs2) {
+        registers[binaryStringToInt(rd)] = (registers[Integer.valueOf(binaryStringToInt(rs1))] < registers[Integer.valueOf(binaryStringToInt(rs2))]) ? 1 : 0;
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = sltPrint(rd, rs1, rs2);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String sltPrint(String rd, String rs1, String rs2) {
+        String newLine = "slt " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + intToRegister.get(binaryStringToInt(rs2));
+        return newLine;
+    }
+
+    public void sltu (String rd, String rs1, String rs2) {
+        registers[binaryStringToInt(rd)] = (registers[Integer.valueOf(binaryStringToInt(rs1))] < registers[Integer.valueOf(binaryStringToInt(rs2))]) ? 1 : 0;
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = sltuPrint(rd, rs1, rs2);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String sltuPrint(String rd, String rs1, String rs2) {
+        String newLine = "sltu " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + intToRegister.get(binaryStringToInt(rs2));
+        return newLine;
+    }
+
+    public void xor (String rd, String rs1, String rs2) {
+        registers[binaryStringToInt(rd)] = (registers[Integer.valueOf(binaryStringToInt(rs1))] ^ registers[Integer.valueOf(binaryStringToInt(rs2))]);
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = xorPrint(rd, rs1, rs2);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String xorPrint(String rd, String rs1, String rs2) {
+        String newLine = "xor " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + intToRegister.get(binaryStringToInt(rs2));
+        return newLine;
+    }
+
+    public void srl (String rd, String rs1, String rs2) {
+        registers[binaryStringToInt(rd)] = (registers[Integer.valueOf(binaryStringToInt(rs1))] >> registers[Integer.valueOf(binaryStringToInt(rs2))]);
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = srlPrint(rd, rs1, rs2);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String srlPrint(String rd, String rs1, String rs2) {
+        String newLine = "srl " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + intToRegister.get(binaryStringToInt(rs2));
+        return newLine;
+    }
+
+    public void sra (String rd, String rs1, String rs2) {
+        registers[binaryStringToInt(rd)] = (registers[Integer.valueOf(binaryStringToInt(rs1))] >> registers[Integer.valueOf(binaryStringToInt(rs2))]);
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = sraPrint(rd, rs1, rs2);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String sraPrint(String rd, String rs1, String rs2) {
+        String newLine = "sra " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + intToRegister.get(binaryStringToInt(rs2));
+        return newLine;
+    }
+
+    public void or (String rd, String rs1, String rs2) {
+        registers[binaryStringToInt(rd)] = (registers[Integer.valueOf(binaryStringToInt(rs1))] | registers[Integer.valueOf(binaryStringToInt(rs2))]);
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = orPrint(rd, rs1, rs2);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String orPrint(String rd, String rs1, String rs2) {
+        String newLine = "or " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + intToRegister.get(binaryStringToInt(rs2));
+        return newLine;
+    }
+
+    public void and (String rd, String rs1, String rs2) {
+        registers[binaryStringToInt(rd)] = (registers[Integer.valueOf(binaryStringToInt(rs1))] & registers[Integer.valueOf(binaryStringToInt(rs2))]);
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = andPrint(rd, rs1, rs2);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String andPrint(String rd, String rs1, String rs2) {
+        String newLine = "and " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + intToRegister.get(binaryStringToInt(rs2));
+        return newLine;
+    }
+
     public void operation_i(String opcode, String rd, String rs1, String func, String imm) {
         if (opcode.equals("0010011")) {
             if (func.equals("000")) {
@@ -399,36 +629,57 @@ public class ReadDatFile2 {
             if (func.equals("000")) {
                 if (imm.substring(0, 2).equals("00") ){
                     // add
+                    String rs2 = imm.substring(7);
+                    add(rd, rs1, rs2);
+
                 }
                 else if (imm.substring(0, 2).equals("01") ){
                     // sub
+                    String rs2 = imm.substring(7);
+                    sub(rd, rs1, rs2);
                 }
             }
             else if (func.equals("001")) {
                 // sll
+                String rs2 = imm.substring(7);
+                sll(rd, rs1, rs2);
             }
             else if (func.equals("010")) {
                 // slt
+                String rs2 = imm.substring(7);
+                slt(rd, rs1, rs2);
             }
             else if (func.equals("011")) {
                 // sltu
+                String rs2 = imm.substring(7);
+                sltu(rd, rs1, rs2);
             }
             else if (func.equals("100")) {
                 // xor
+                String rs2 = imm.substring(7);
+                xor(rd, rs1, rs2);;
             }
             else if (func.equals("101")) {
                 if (imm.substring(0, 2).equals("00") ){
                     // srl
+                    String rs2 = imm.substring(7);
+                    srl(rd, rs1, rs2);
                 }
                 else if (imm.substring(0, 2).equals("01") ){
                     // sra
+                    String rs2 = imm.substring(7);
+                    sra(rd, rs1, rs2);
                 }
             }
             else if (func.equals("110")) {
                 // or
+                String rs2 = imm.substring(7);
+                or(rd, rs1, rs2);
             }
             else if (func.equals("111")) {
                 // and
+                String rs2 = imm.substring(7);
+                and(rd, rs1, rs2);
             }
         }
         else if (opcode.equals("0000011")) {
@@ -519,8 +770,144 @@ public class ReadDatFile2 {
                     imm = imm.replaceAll("\\s", "");
                     rs1 = rs1.replaceAll("\\s", "");
                     rd = rd.replaceAll("\\s", "");
-                    String s = addiPrint(rd, rs1, imm);
-                    System.out.println(s);
+                    if (opcode.equals("0010011")) {
+                        if (func.equals("000")) {
+                            String s1 = addiPrint(rd, rs1, imm);
+                            System.out.println(s1);
+                        }
+                        else if (func.equals("010")) {
+                            String s1 = sltiPrint(rd, rs1, imm);
+                            System.out.println(s1);
+                        }
+                        else if (func.equals("100")) {
+                            // xori
+                            String s1 = printXori(rd, rs1, imm);
+                            System.out.println(s1);
+                        }
+                        else if (func.equals("110")) {
+                            // ori
+                           String s1 =  oriPrint(rd, rs1, imm);
+                           System.out.println(s1);
+                        }
+                        else if (func.equals("111")) {
+                            // andi
+                            String s1 = printAndi(rd, rs1, imm);
+                            System.out.println(s1);
+                        }
+                        else if (func.equals("101")) {
+                            if (imm.substring(0, 2).equals("01") ){
+                                // srai
+                                imm = imm.substring(7);
+                                String s1 = printSrai(rd, rs1, imm);
+                                System.out.println(s1);
+                            }
+                            else {
+                                //srli
+                                imm = imm.substring(7);
+                                String s1 = srliPrint(rd, rs1, imm);
+                                System.out.println(s1);
+                            }
+                        }
+                        else if (func.equals("001")) {
+                            String s1 = slliPrint(rd, rs1, imm);
+                            System.out.println(s1);
+                        }
+                    }
+                    else if (opcode.equals("0110011")) {
+                        if (func.equals("000")) {
+                            if (imm.substring(0, 2).equals("00") ){
+                                // add
+                                String rs2 = imm.substring(7);
+                                String s1 = addPrint(rd, rs1, rs2);
+                                System.out.println(s1);
+            
+                            }
+                            else if (imm.substring(0, 2).equals("01") ){
+                                // sub
+                                String rs2 = imm.substring(7);
+                                String s1 = subPrint(rd, rs1, rs2);
+                                System.out.println(s1);
+                            }
+                        }
+                        else if (func.equals("001")) {
+                            // sll
+                            String rs2 = imm.substring(7);
+                            String s1 = sllPrint(rd, rs1, rs2);
+                            System.out.println(s1);
+                        }
+                        else if (func.equals("010")) {
+                            // slt
+                            String rs2 = imm.substring(7);
+                            String s1 = sltPrint(rd, rs1, rs2);
+                            System.out.println(s1);
+                        }
+                        else if (func.equals("011")) {
+                            // sltu
+                            String rs2 = imm.substring(7);
+                            String s1 = sltuPrint(rd, rs1, rs2);
+                            System.out.println(s1);
+                        }
+                        else if (func.equals("100")) {
+                            // xor
+                            String rs2 = imm.substring(7);
+                            String s1 = xorPrint(rd, rs1, rs2);
+                            System.out.println(s1);
+                        }
+                        else if (func.equals("101")) {
+                            if (imm.substring(0, 2).equals("00") ){
+                                // srl
+                                String rs2 = imm.substring(7);
+                                String s1 = srlPrint(rd, rs1, rs2);
+                                System.out.println(s1);
+                            }
+                            else if (imm.substring(0, 2).equals("01") ){
+                                // sra
+                                String rs2 = imm.substring(7);
+                                String s1 = sraPrint(rd, rs1, rs2);
+                                System.out.println(s1);
+                            }
+                        }
+                        else if (func.equals("110")) {
+                            // or
+                            String rs2 = imm.substring(7);
+                           String s1 =  orPrint(rd, rs1, rs2);
+                           System.out.println(s1);
+                        }
+                        else if (func.equals("111")) {
+                            // and
+                            String rs2 = imm.substring(7);
+                            String s1 = andPrint(rd, rs1, rs2);
+                            System.out.println(s1);
+                        }
+                    }
+                    else if (opcode.equals("0000011")) {
+                        if (func.equals("000")) {
+                            // lb
+                        }
+                        else if (func.equals("001")) {
+                            // lh
+                        }
+                        else if (func.equals("010")) {
+                            // lw
+                        }
+                        else if (func.equals("100")) {
+                            // lbu
+                        }
+                        else if (func.equals("101")) {
+                            // lhu
+                        }
+                    }
+                    else if (opcode.equals("0100011")) {
+                        if (func.equals("000")) {
+                            // sb
+                        }
+                        else if (func.equals("001")) {
+                            // sh
+                        }
+                        else if (func.equals("010")) {
+                            // sw
+                        }
+                    }
                 }
                 // System.out.print("IMM: " + imm);
                 // System.out.println(" Decimal: " + convertToDecimal(imm));
@@ -706,7 +1093,7 @@ public class ReadDatFile2 {
     public static void main(String[] args) {
         // Change path with your own file
         // String filePath = "/Users/ekanshgupta/CMPE 120/SimulatorTests/addi_hazards.dat";
-        String filePath = "/Users/ekanshgupta/CMPE 120/SimulatorTests/i_type.dat";
+        String filePath = "/Users/ekanshgupta/CMPE 120/SimulatorTests/r_type.dat";
         ReadDatFile2 r1 = new ReadDatFile2(filePath);
 
         Scanner scanner = new Scanner(System.in);
