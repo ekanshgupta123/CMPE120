@@ -126,6 +126,7 @@ public class ReadDatFile2 {
                 }
                 programCounter = Integer.toHexString(convertHexToDecimal(this.programCounter) + 4);
                 programCounter = "0x"+programCounter;
+                
                 // programCounter+=4;
                 // System.out.println("Program Counter: " + programCounter);
                 // System.out.println("Register rd: " + binaryStringToInt(rd) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rd))]);
