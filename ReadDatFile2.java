@@ -126,7 +126,6 @@ public class ReadDatFile2 {
                 }
                 programCounter = Integer.toHexString(convertHexToDecimal(this.programCounter) + 4);
                 programCounter = "0x"+programCounter;
-                
                 // programCounter+=4;
                 // System.out.println("Program Counter: " + programCounter);
                 // System.out.println("Register rd: " + binaryStringToInt(rd) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rd))]);
@@ -184,6 +183,57 @@ public class ReadDatFile2 {
         }
 
     }
+    
+    public String sltiPrint(String rd, String rs1, String imm) {
+        String newLine = "slti " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToDecimal(imm);
+        return newLine;
+    }
+
+    public void slti(String rd, String rs1, String imm) {
+        if (registers[Integer.valueOf(binaryStringToInt(rs1))] < convertToDecimal(imm)) {
+            registers[binaryStringToInt(rd)] = 1;
+        } else {
+            registers[binaryStringToInt(rd)] = 0;
+        }
+
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = sltiPrint(rd, rs1, imm);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public String slliPrint(String rd, String rs1, String shamt) {
+        String newLine = "slli " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + binaryStringToInt(shamt);
+        return newLine;
+    }
+
+    public void slli(String rd, String rs1, String shamt) {
+        int shiftAmount = binaryStringToInt(shamt);
+        registers[binaryStringToInt(rd)] = registers[binaryStringToInt(rs1)] << shiftAmount;
+
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = slliPrint(rd, rs1, shamt);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void operation_i(String opcode, String rd, String rs1, String func, String imm) {
         if (opcode.equals("0010011")) {
@@ -191,16 +241,13 @@ public class ReadDatFile2 {
                 addi(rd, rs1, imm);
             }
             else if (func.equals("010")) {
-                // slti
+                slti(rd, rs1, imm);
             }
             else if (func.equals("100")) {
                 // xori
             }
             else if (func.equals("110")) {
                 // ori
-            }
-            else if (func.equals("011")) {
-                // slli
             }
             else if (func.equals("111")) {
                 // andi
@@ -214,7 +261,7 @@ public class ReadDatFile2 {
                 }
             }
             else if (func.equals("001")) {
-                // slli
+                slli(rd, rs1, imm);
             }
         }
         else if (opcode.equals("0110011")) {
@@ -528,7 +575,7 @@ public class ReadDatFile2 {
     public static void main(String[] args) {
         // Change path with your own file
         // String filePath = "/Users/ekanshgupta/CMPE 120/SimulatorTests/addi_hazards.dat";
-        String filePath = "/Users/ekanshgupta/CMPE 120/SimulatorTests/addi_nohazard.dat";
+        String filePath = "/Users/ekanshgupta/CMPE 120/SimulatorTests/i_type.dat";
         ReadDatFile2 r1 = new ReadDatFile2(filePath);
 
         Scanner scanner = new Scanner(System.in);
