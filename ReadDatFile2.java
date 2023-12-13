@@ -119,6 +119,7 @@ public class ReadDatFile2 {
                     rd += concatenatedLines.charAt(0);
                     rs1 = rs1.replaceAll("\\s", "");
                     rd = rd.replaceAll("\\s", "");
+                    // System.out.println(imm);
                     operation_i(opcode, rd, rs1, func, imm);
                 }
                 else if (opcode.equals("0000000")) {
@@ -168,7 +169,7 @@ public class ReadDatFile2 {
     }
 
     public String oriPrint(String rd, String rs1, String imm) {
-        String newLine = "ori " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToDecimal(imm);
+        String newLine = "ori " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + "0x" + Integer.toHexString(convertToDecimal(imm));
         return newLine;
     }
 
@@ -236,7 +237,7 @@ public class ReadDatFile2 {
     }
 
     public String printAndi(String rd, String rs1, String imm) {
-        String newLine = "srai " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToHexadecimal(imm);
+        String newLine = "andi " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + "0x" + Integer.toHexString(convertToDecimal(imm));
         return newLine;
     }
 
@@ -308,7 +309,7 @@ public class ReadDatFile2 {
     }
     
     public String sltiPrint(String rd, String rs1, String imm) {
-        String newLine = "slti " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToHexadecimal(imm);
+        String newLine = "slti " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + "0x" + Integer.toHexString(convertToDecimal(imm));
         return newLine;
     }
 
