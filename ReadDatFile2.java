@@ -234,6 +234,79 @@ public class ReadDatFile2 {
             e.printStackTrace();
         }
     }
+    
+    public String xoriPrint(String rd, String rs1, String imm) {
+        String newLine = "xori " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToDecimal(imm);
+        return newLine;
+    }
+
+    public void xori(String rd, String rs1, String imm) {
+        registers[binaryStringToInt(rd)] = registers[binaryStringToInt(rs1)] ^ convertToDecimal(imm);
+
+        // Write the assembly code to a file (assembly.asm)
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = xoriPrint(rd, rs1, imm);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public String oriPrint(String rd, String rs1, String imm) {
+        String newLine = "ori " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToDecimal(imm);
+        return newLine;
+    }
+
+    public void ori(String rd, String rs1, String imm) {
+        registers[binaryStringToInt(rd)] = registers[binaryStringToInt(rs1)] | convertToDecimal(imm);
+
+        // Write the assembly code to a file (assembly.asm)
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = oriPrint(rd, rs1, imm);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String andiPrint(String rd, String rs1, String imm) {
+        String newLine = "andi " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToDecimal(imm);
+        return newLine;
+    }
+
+    public void andi(String rd, String rs1, String imm) {
+        registers[binaryStringToInt(rd)] = registers[binaryStringToInt(rs1)] & convertToDecimal(imm);
+
+        // Write the assembly code to a file (assembly.asm)
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = andiPrint(rd, rs1, imm);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void operation_i(String opcode, String rd, String rs1, String func, String imm) {
         if (opcode.equals("0010011")) {
@@ -244,16 +317,16 @@ public class ReadDatFile2 {
                 slti(rd, rs1, imm);
             }
             else if (func.equals("100")) {
-                // xori
+            	xori(rd, rs1, imm);
             }
             else if (func.equals("110")) {
-                // ori
+            	ori(rd, rs1, imm);
             }
             else if (func.equals("011")) {
             	slli(rd, rs1, imm);
             }
             else if (func.equals("111")) {
-                // andi
+                andi(rd, rs1, imm);
             }
             else if (func.equals("101")) {
                 if (imm.substring(0, 2).equals("01") ){
