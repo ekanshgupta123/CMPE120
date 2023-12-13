@@ -142,6 +142,129 @@ public class ReadDatFile2 {
         }
     }
 
+    public String srliPrint(String rd, String rs1, String imm) {
+        String newLine = "srli " + intToRegister.get(binaryStringToInt(rd)) + ", " 
+                         + intToRegister.get(binaryStringToInt(rs1)) + ", " 
+                         + convertToDecimal(imm);
+        return newLine;
+    }
+
+    public void srli(String rd, String rs1, String imm) {
+        registers[binaryStringToInt(rd)] = registers[binaryStringToInt(rs1)] >>> convertToDecimal(imm);
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = srliPrint(rd, rs1, imm);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String oriPrint(String rd, String rs1, String imm) {
+        String newLine = "ori " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToDecimal(imm);
+        return newLine;
+    }
+
+    public void ori(String rd, String rs1, String imm) {
+        registers[binaryStringToInt(rd)] = registers[binaryStringToInt(rs1)] | convertToDecimal(imm);
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = oriPrint(rd, rs1, imm);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String printXori(String rd, String rs1, String imm) {
+        String newLine = "xori " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToDecimal(imm);
+        return newLine;
+    }
+
+    // XOR immediate
+    public void xori(String rd, String rs1, String imm) {
+        registers[binaryStringToInt(rd)] = registers[binaryStringToInt(rs1)] ^ convertToDecimal(imm);
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = printXori(rd, rs1, imm);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String printSrai(String rd, String rs1, String imm) {
+        String newLine = "srai " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToDecimal(imm);
+        return newLine;
+    }
+
+    // Shift right arithmetic immediate
+    public void srai(String rd, String rs1, String imm) {
+        registers[binaryStringToInt(rd)] = registers[binaryStringToInt(rs1)] >> convertToDecimal(imm);
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = printSrai(rd, rs1, imm);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String printAndi(String rd, String rs1, String imm) {
+        String newLine = "srai " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToHexadecimal(imm);
+        return newLine;
+    }
+
+    // AND immediate
+    public void andi(String rd, String rs1, String imm) {
+        registers[binaryStringToInt(rd)] = registers[binaryStringToInt(rs1)] & convertToDecimal(imm);
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = printAndi(rd, rs1, imm);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Helper method to convert hexadecimal string to integer
+    public String convertToHexadecimal(String hex) {
+        long longValue = Long.parseLong(hex);
+        return Long.toHexString(longValue);
+    }
+
+
     public String addiPrint(String rd, String rs1, String imm) {
         String newLine = "addi " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToDecimal(imm);
         return newLine;
@@ -185,7 +308,7 @@ public class ReadDatFile2 {
     }
     
     public String sltiPrint(String rd, String rs1, String imm) {
-        String newLine = "slti " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToDecimal(imm);
+        String newLine = "slti " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToHexadecimal(imm);
         return newLine;
     }
 
@@ -245,19 +368,26 @@ public class ReadDatFile2 {
             }
             else if (func.equals("100")) {
                 // xori
+                xori(rd, rs1, imm);
             }
             else if (func.equals("110")) {
                 // ori
+                ori(rd, rs1, imm);
             }
             else if (func.equals("111")) {
                 // andi
+                andi(rd, rs1, imm);
             }
             else if (func.equals("101")) {
                 if (imm.substring(0, 2).equals("01") ){
                     // srai
+                    imm = imm.substring(7);
+                    srai(rd, rs1, imm);
                 }
                 else {
                     //srli
+                    imm = imm.substring(7);
+                    srli(rd, rs1, imm);
                 }
             }
             else if (func.equals("001")) {
