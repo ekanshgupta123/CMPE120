@@ -210,7 +210,30 @@ public class ReadDatFile2 {
             e.printStackTrace();
         }
     }
+    
+    public String slliPrint(String rd, String rs1, String shamt) {
+        String newLine = "slli " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + binaryStringToInt(shamt);
+        return newLine;
+    }
 
+    public void slli(String rd, String rs1, String shamt) {
+        int shiftAmount = binaryStringToInt(shamt);
+        registers[binaryStringToInt(rd)] = registers[binaryStringToInt(rs1)] << shiftAmount;
+
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            String newLine = slliPrint(rd, rs1, shamt);
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void operation_i(String opcode, String rd, String rs1, String func, String imm) {
         if (opcode.equals("0010011")) {
