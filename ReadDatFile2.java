@@ -250,7 +250,7 @@ public class ReadDatFile2 {
                 // ori
             }
             else if (func.equals("011")) {
-                // slli
+            	slli(rd, rs1, imm);
             }
             else if (func.equals("111")) {
                 // andi
@@ -264,7 +264,7 @@ public class ReadDatFile2 {
                 }
             }
             else if (func.equals("001")) {
-                // slli
+            	slli(rd, rs1, imm);
             }
         }
         else if (opcode.equals("0110011")) {
