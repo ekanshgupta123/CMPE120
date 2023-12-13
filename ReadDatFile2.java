@@ -81,38 +81,49 @@ public class ReadDatFile2 {
                 String rd = "";
                 String func = "";
                 String opcode = "";
-                for (int i = 27; i <= 34; i++) {
-                    imm += concatenatedLines.charAt(i);
-                }
-                for (int i = 18; i <= 21; i++) {
-                    imm += concatenatedLines.charAt(i);
-                }
-                for (int i = 22; i <= 25; i++) {
-                    rs1 += concatenatedLines.charAt(i);
-                }
-                rs1 += concatenatedLines.charAt(9);
-                for (int i = 10; i <= 12; i++) {
-                    func += concatenatedLines.charAt(i);
-                }
-                for (int i = 13; i <= 16; i++) {
-                    rd += concatenatedLines.charAt(i);
-                }
-                rd += concatenatedLines.charAt(0);
+
                 for (int i = 1; i <= 7; i++) {
                     opcode += concatenatedLines.charAt(i);
                 }
-                imm = imm.replaceAll("\\s", "");
+                // imm = imm.replaceAll("\\s", "");
+
                 // System.out.print("IMM: " + imm);
                 // System.out.println(" Decimal: " + convertToDecimal(imm));
-                rs1 = rs1.replaceAll("\\s", "");
+                // rs1 = rs1.replaceAll("\\s", "");
                 // System.out.print("RS1: " + rs1);
                 // System.out.println(" " + intToRegister.get(binaryStringToInt(rs1)));
                 // System.out.println("Func3: " + func.replaceAll("\\s", ""));
-                rd = rd.replaceAll("\\s", "");
+                // rd = rd.replaceAll("\\s", "");
                 // System.out.print("rd: " + rd);
                 // System.out.println(" Register: " + intToRegister.get(binaryStringToInt(rd)));
                 // System.out.println("opcode: " + opcode.replaceAll("\\s", ""));
                 opcode = opcode.replaceAll("\\s", "");
+                if (opcode.equals("0010011") || opcode.equals("0110011") || opcode.equals("0000011")) {
+                    for (int i = 27; i <= 34; i++) {
+                        imm += concatenatedLines.charAt(i);
+                    }
+                    for (int i = 18; i <= 21; i++) {
+                        imm += concatenatedLines.charAt(i);
+                    }
+                    for (int i = 22; i <= 25; i++) {
+                        rs1 += concatenatedLines.charAt(i);
+                    }
+                    rs1 += concatenatedLines.charAt(9);
+                    for (int i = 10; i <= 12; i++) {
+                        func += concatenatedLines.charAt(i);
+                    }
+                    for (int i = 13; i <= 16; i++) {
+                        rd += concatenatedLines.charAt(i);
+                    }
+                    imm = imm.replaceAll("\\s", "");
+                    rd += concatenatedLines.charAt(0);
+                    rs1 = rs1.replaceAll("\\s", "");
+                    rd = rd.replaceAll("\\s", "");
+                    operation_i(opcode, rd, rs1, func, imm);
+                }
+                else if (opcode.equals("0000000")) {
+                    nop();
+                }
                 programCounter = Integer.toHexString(convertHexToDecimal(this.programCounter) + 4);
                 programCounter = "0x"+programCounter;
                 // programCounter+=4;
@@ -120,8 +131,8 @@ public class ReadDatFile2 {
                 // System.out.println("Register rd: " + binaryStringToInt(rd) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rd))]);
                 // System.out.println("Register rs1: " + binaryStringToInt(rs1) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rs1))]);
                 // System.out.println(intToRegister.get(binaryStringToInt(rd)) + " = " + intToRegister.get(binaryStringToInt(rs1)) + " + " + imm);
-                registers[binaryStringToInt(rd)] = registers[Integer.valueOf(binaryStringToInt(rs1))] + convertToDecimal(imm);
-                instruction(intToRegister.get(binaryStringToInt(rd)), intToRegister.get(binaryStringToInt(rs1)), convertToDecimal(imm));
+                // registers[binaryStringToInt(rd)] = registers[Integer.valueOf(binaryStringToInt(rs1))] + convertToDecimal(imm);
+                // instruction(intToRegister.get(binaryStringToInt(rd)), intToRegister.get(binaryStringToInt(rs1)), convertToDecimal(imm));
                 // System.out.println("New value in register " + intToRegister.get(binaryStringToInt(rd))+ ": " + registers[binaryStringToInt(rd)]);
                 // System.out.println("-------------------------------------");  // Separator
             }       
@@ -131,116 +142,19 @@ public class ReadDatFile2 {
         }
     }
 
-    public void operation(String opcode, String rd, String rs1, String func, String imm) {
-        if (opcode == "0010011") {
-            if (func == "000") {
-                // addi 
-            }
-            else if (func == "010") {
-                // slti
-            }
-            else if (func == "100") {
-                // xori
-            }
-            else if (func == "110") {
-                // ori
-            }
-            else if (func == "011") {
-                // slli
-            }
-            else if (func == "111") {
-                // andi
-            }
-            else if (func == "101") {
-                if (imm.substring(0, 2) == "01") {
-                    // srai
-                }
-                else {
-                    //srli
-                }
-            }
-            else if (func == "001") {
-                // slli
-            }
-        }
-        else if (opcode == "0110011") {
-            if (func == "000") {
-                if (imm.substring(0, 2) == "00") {
-                    // add
-                }
-                else if (imm.substring(0, 2) == "01") {
-                    // sub
-                }
-            }
-            else if (func == "001") {
-                // sll
-            }
-            else if (func == "010") {
-                // slt
-            }
-            else if (func == "011") {
-                // sltu
-            }
-            else if (func == "100") {
-                // xor
-            }
-            else if (func == "101") {
-                if (imm.substring(0, 2) == "00") {
-                    // srl
-                }
-                else if (imm.substring(0, 2) == "01") {
-                    // sra
-                }
-            }
-            else if (func == "110") {
-                // or
-            }
-            else if (func == "111") {
-                // and
-            }
-        }
-        else if (opcode == "0000011") {
-            if (func == "000") {
-                // lb
-            }
-            else if (func == "001") {
-                // lh
-            }
-            else if (func == "010") {
-                // lw
-            }
-            else if (func == "100") {
-                // lbu
-            }
-            else if (func == "101") {
-                // lhu
-            }
-        }
-        else if (opcode == "0100011") {
-            if (func == "000") {
-                // sb
-            }
-            else if (func == "001") {
-                // sh
-            }
-            else if (func == "010") {
-                // sw
-            }
-        }
+    public String addiPrint(String rd, String rs1, String imm) {
+        String newLine = "addi " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToDecimal(imm);
+        return newLine;
     }
 
-    public String getProgramCounter() {
-        return programCounter;
-    }
-
-    public void instruction (String reg1, String reg2, int imm) {
+    public void addi(String rd, String rs1, String imm) {
+        registers[binaryStringToInt(rd)] = registers[Integer.valueOf(binaryStringToInt(rs1))] + convertToDecimal(imm);
         String fileName = "assembly.asm";
         try {
             FileWriter fileWriter = new FileWriter(fileName, true);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
-            // need to get rid of "addi" make it dy
-            String newLine = "addi " + reg1 + ", " + reg2 + ", " + imm;
+            String newLine = addiPrint(rd, rs1, imm);
 
             bufferedWriter.write(newLine);
             bufferedWriter.newLine();
@@ -249,6 +163,127 @@ public class ReadDatFile2 {
         catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void nop () {
+        String fileName = "assembly.asm";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            // need to get rid of "addi" make it dy
+            String newLine = "nop";
+
+            bufferedWriter.write(newLine);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void operation_i(String opcode, String rd, String rs1, String func, String imm) {
+        if (opcode.equals("0010011")) {
+            if (func.equals("000")) {
+                addi(rd, rs1, imm);
+            }
+            else if (func.equals("010")) {
+                // slti
+            }
+            else if (func.equals("100")) {
+                // xori
+            }
+            else if (func.equals("110")) {
+                // ori
+            }
+            else if (func.equals("011")) {
+                // slli
+            }
+            else if (func.equals("111")) {
+                // andi
+            }
+            else if (func.equals("101")) {
+                if (imm.substring(0, 2).equals("01") ){
+                    // srai
+                }
+                else {
+                    //srli
+                }
+            }
+            else if (func.equals("001")) {
+                // slli
+            }
+        }
+        else if (opcode.equals("0110011")) {
+            if (func.equals("000")) {
+                if (imm.substring(0, 2).equals("00") ){
+                    // add
+                }
+                else if (imm.substring(0, 2).equals("01") ){
+                    // sub
+                }
+            }
+            else if (func.equals("001")) {
+                // sll
+            }
+            else if (func.equals("010")) {
+                // slt
+            }
+            else if (func.equals("011")) {
+                // sltu
+            }
+            else if (func.equals("100")) {
+                // xor
+            }
+            else if (func.equals("101")) {
+                if (imm.substring(0, 2).equals("00") ){
+                    // srl
+                }
+                else if (imm.substring(0, 2).equals("01") ){
+                    // sra
+                }
+            }
+            else if (func.equals("110")) {
+                // or
+            }
+            else if (func.equals("111")) {
+                // and
+            }
+        }
+        else if (opcode.equals("0000011")) {
+            if (func.equals("000")) {
+                // lb
+            }
+            else if (func.equals("001")) {
+                // lh
+            }
+            else if (func.equals("010")) {
+                // lw
+            }
+            else if (func.equals("100")) {
+                // lbu
+            }
+            else if (func.equals("101")) {
+                // lhu
+            }
+        }
+        else if (opcode.equals("0100011")) {
+            if (func.equals("000")) {
+                // sb
+            }
+            else if (func.equals("001")) {
+                // sh
+            }
+            else if (func.equals("010")) {
+                // sw
+            }
+        }
+    }
+
+    public String getProgramCounter() {
+        return programCounter;
     }
 
     public void insn() {
@@ -280,34 +315,39 @@ public class ReadDatFile2 {
                 String rd = "";
                 String func = "";
                 String opcode = "";
-                for (int i = 27; i <= 34; i++) {
-                    imm += concatenatedLines.charAt(i);
-                }
-                for (int i = 18; i <= 21; i++) {
-                    imm += concatenatedLines.charAt(i);
-                }
-                for (int i = 22; i <= 25; i++) {
-                    rs1 += concatenatedLines.charAt(i);
-                }
-                rs1 += concatenatedLines.charAt(9);
-                for (int i = 10; i <= 12; i++) {
-                    func += concatenatedLines.charAt(i);
-                }
-                for (int i = 13; i <= 16; i++) {
-                    rd += concatenatedLines.charAt(i);
-                }
-                rd += concatenatedLines.charAt(0);
                 for (int i = 1; i <= 7; i++) {
                     opcode += concatenatedLines.charAt(i);
                 }
-                imm = imm.replaceAll("\\s", "");
+
+                if (opcode.equals("0010011") || opcode.equals("0110011") || opcode.equals("0000011")) {
+                    for (int i = 27; i <= 34; i++) {
+                        imm += concatenatedLines.charAt(i);
+                    }
+                    for (int i = 18; i <= 21; i++) {
+                        imm += concatenatedLines.charAt(i);
+                    }
+                    for (int i = 22; i <= 25; i++) {
+                        rs1 += concatenatedLines.charAt(i);
+                    }
+                    rs1 += concatenatedLines.charAt(9);
+                    for (int i = 10; i <= 12; i++) {
+                        func += concatenatedLines.charAt(i);
+                    }
+                    for (int i = 13; i <= 16; i++) {
+                        rd += concatenatedLines.charAt(i);
+                    }
+                    rd += concatenatedLines.charAt(0);
+                    imm = imm.replaceAll("\\s", "");
+                    rs1 = rs1.replaceAll("\\s", "");
+                    rd = rd.replaceAll("\\s", "");
+                    String s = addiPrint(rd, rs1, imm);
+                    System.out.println(s);
+                }
                 // System.out.print("IMM: " + imm);
                 // System.out.println(" Decimal: " + convertToDecimal(imm));
-                rs1 = rs1.replaceAll("\\s", "");
                 // System.out.print("RS1: " + rs1);
                 // System.out.println(" " + intToRegister.get(binaryStringToInt(rs1)));
                 // System.out.println("Func3: " + func.replaceAll("\\s", ""));
-                rd = rd.replaceAll("\\s", "");
                 // System.out.print("rd: " + rd);
                 // System.out.println(" Register: " + intToRegister.get(binaryStringToInt(rd)));
                 // System.out.println("opcode: " + opcode.replaceAll("\\s", ""));
@@ -315,7 +355,7 @@ public class ReadDatFile2 {
                 // System.out.println("Program Counter: " + programCounter);
                 // System.out.println("Register rd: " + binaryStringToInt(rd) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rd))]);
                 // System.out.println("Register rs1: " + binaryStringToInt(rs1) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rs1))]);
-                System.out.println("addi " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToDecimal(imm));
+                // System.out.println("addi " + intToRegister.get(binaryStringToInt(rd)) + ", " + intToRegister.get(binaryStringToInt(rs1)) + ", " + convertToDecimal(imm));
                 // instruction(intToRegister.get(binaryStringToInt(rd)), intToRegister.get(binaryStringToInt(rs1)), imm);
                 // registers[binaryStringToInt(rd)] = registers[Integer.valueOf(binaryStringToInt(rs1))] + convertToDecimal(imm);
                 // System.out.println("New value in register " + intToRegister.get(binaryStringToInt(rd))+ ": " + registers[binaryStringToInt(rd)]);
@@ -401,49 +441,55 @@ public class ReadDatFile2 {
                     String rd = "";
                     String func = "";
                     String opcode = "";
-                    for (int i = 27; i <= 34; i++) {
-                        imm+=concatenatedLines.charAt(i);
-                    }
-                    for (int i = 18; i <= 21; i++) {
-                        imm+=concatenatedLines.charAt(i);
-                    }
-                    for (int i = 22; i <= 25; i++) {
-                        rs1+=concatenatedLines.charAt(i);
-                    }
-                    rs1+=concatenatedLines.charAt(9);
-                    for (int i = 10; i <= 12; i++) {
-                        func+=concatenatedLines.charAt(i);
-                    }
-                    for (int i = 13; i <= 16; i++) {
-                        rd+=concatenatedLines.charAt(i);
-                    }
-                    rd+=concatenatedLines.charAt(0);
                     for (int i = 1; i <= 7; i++) {
                         opcode+=concatenatedLines.charAt(i);
                     }
-                    imm = imm.replaceAll("\\s", "");
                     // System.out.print("IMM: " + imm);
                     // System.out.println(" Decimal: " + convertToDecimal(imm));
-                    rs1 = rs1.replaceAll("\\s", "");
                     // System.out.print("RS1: " + rs1);
                     // System.out.println(" " + intToRegister.get(binaryStringToInt(rs1)));
                     // System.out.println("Func3: " + func.replaceAll("\\s", ""));
-                    rd = rd.replaceAll("\\s", "");
                     // System.out.print("rd: " + rd);
                     // System.out.println(" Register: " + intToRegister.get(binaryStringToInt(rd)));
                     // System.out.println("opcode: " + opcode.replaceAll("\\s", ""));
+                    if (opcode.equals("0010011") || opcode.equals("0110011") || opcode.equals("0000011")) {
+                        for (int i = 27; i <= 34; i++) {
+                            imm += concatenatedLines.charAt(i);
+                        }
+                        for (int i = 18; i <= 21; i++) {
+                            imm += concatenatedLines.charAt(i);
+                        }
+                        for (int i = 22; i <= 25; i++) {
+                            rs1 += concatenatedLines.charAt(i);
+                        }
+                        rs1 += concatenatedLines.charAt(9);
+                        for (int i = 10; i <= 12; i++) {
+                            func += concatenatedLines.charAt(i);
+                        }
+                        for (int i = 13; i <= 16; i++) {
+                            rd += concatenatedLines.charAt(i);
+                        }
+                        imm = imm.replaceAll("\\s", "");
+                        rs1 = rs1.replaceAll("\\s", "");
+                        rd += concatenatedLines.charAt(0);
+                        rd = rd.replaceAll("\\s", "");
+                        operation_i(opcode, rd, rs1, func, imm);
+                    }
+                    else if (opcode.equals("0000000")) {
+                        nop();
+                    }
                     programCounter = Integer.toHexString(convertHexToDecimal(this.programCounter) + 4);
                     programCounter = "0x"+programCounter;
-                    System.out.println(programCounter);
+                    // System.out.println(programCounter);
                     // programCounter+=4;
                     // System.out.println("Program Counter: " + programCounter);
                     // System.out.println("Register rd: " + binaryStringToInt(rd) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rd))]);
                     // System.out.println("Register rs1: " + binaryStringToInt(rs1) + " Value in register: " + registers[Integer.valueOf(binaryStringToInt(rs1))]);
                     // System.out.println(intToRegister.get(binaryStringToInt(rd)) + " = " + intToRegister.get(binaryStringToInt(rs1)) + " + " + imm);
-                    registers[binaryStringToInt(rd)] = registers[Integer.valueOf(binaryStringToInt(rs1))] + convertToDecimal(imm);
-                    instruction(intToRegister.get(binaryStringToInt(rd)), intToRegister.get(binaryStringToInt(rs1)), convertToDecimal(imm));
+                    // registers[binaryStringToInt(rd)] = registers[Integer.valueOf(binaryStringToInt(rs1))] + convertToDecimal(imm);
+                    // instruction(intToRegister.get(binaryStringToInt(rd)), intToRegister.get(binaryStringToInt(rs1)), convertToDecimal(imm));
                     // System.out.println("New value in register " + intToRegister.get(binaryStringToInt(rd))+ ": " + registers[binaryStringToInt(rd)]);
-                    System.out.println("-------------------------------------");  // Separator
+                    // System.out.println("-------------------------------------");  // Separator
 
                     // Reset the StringBuilder and line count for the next group
                     concatenatedLines.setLength(0);
